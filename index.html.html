@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENGAJA · Plataforma de Gestão do Programa AJA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mata:#14524A; --folha:#2E7D5B; --mar:#0C4A57; --sol:#E9A13B;
+  --barro:#C4552F; --vinho:#8E2F2F; --areia:#F4F3EC; --papel:#FFFFFF;
+  --ink:#182420; --cinza:#5C6B64; --linha:#E1E3D8; --r:14px;
+  --sombra:0 1px 2px rgba(24,36,32,.05),0 8px 24px rgba(24,36,32,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',system-ui,sans-serif;background:var(--areia);color:var(--ink);font-size:15px;line-height:1.55}
+h1,h2,h3,.display{font-family:'Bricolage Grotesque','Instrument Sans',sans-serif}
+.mono{font-family:'IBM Plex Mono',monospace}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sol);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- Tela de acesso ---------- */
+.login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(1200px 500px at 85% -10%, rgba(20,82,74,.10), transparent 60%),
+    radial-gradient(900px 420px at 0% 110%, rgba(12,74,87,.10), transparent 55%),
+    var(--areia);}
+.login::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='220' viewBox='0 0 420 220'%3E%3Cg fill='none' stroke='%2314524A' stroke-opacity='0.07' stroke-width='1.4'%3E%3Cpath d='M0 40 C90 10 150 70 240 42 S 380 12 420 44'/%3E%3Cpath d='M0 100 C80 70 170 130 260 100 S 380 72 420 104'/%3E%3Cpath d='M0 160 C90 130 160 190 250 162 S 380 132 420 164'/%3E%3Cpath d='M0 214 C90 186 160 246 250 216 S 380 188 420 220'/%3E%3C/g%3E%3C/svg%3E");}
+.login > *{position:relative}
+.wordmark{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(44px,7vw,72px);letter-spacing:-.02em;line-height:1;color:var(--mata)}
+.wordmark span{color:var(--mar)}
+.tagline{margin-top:10px;color:var(--cinza);font-size:16px;text-align:center;max-width:560px}
+.tagline b{color:var(--ink)}
+.demo-note{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:#FFF7E8;border:1px solid #F0DCB0;color:#7A5A16;padding:5px 12px;border-radius:99px;font-size:12.5px;font-weight:600}
+.badges{margin-top:40px;display:grid;grid-template-columns:repeat(4,minmax(200px,240px));gap:18px}
+.badge{position:relative;background:var(--papel);border:1px solid var(--linha);border-radius:18px;padding:0;text-align:left;box-shadow:var(--sombra);transition:transform .18s ease, box-shadow .18s ease;overflow:hidden;display:flex;flex-direction:column}
+.badge:hover{transform:translateY(-4px);box-shadow:0 4px 8px rgba(24,36,32,.08),0 16px 36px rgba(24,36,32,.12)}
+.badge .strip{height:56px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0;position:relative}
+.badge .hole{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:34px;height:9px;border-radius:99px;background:var(--areia);box-shadow:inset 0 1px 3px rgba(0,0,0,.28)}
+.badge .body{padding:18px 18px 20px}
+.badge h3{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.badge p{margin-top:6px;font-size:13px;color:var(--cinza);min-height:58px}
+.badge .go{margin-top:12px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.b-sema .strip{background:linear-gradient(120deg,var(--mata),var(--mar))} .b-sema .go{color:var(--mata)}
+.b-coord .strip{background:linear-gradient(120deg,var(--folha),var(--mata))} .b-coord .go{color:var(--folha)}
+.b-jovem .strip{background:linear-gradient(120deg,var(--sol),#D98A2B)} .b-jovem .go{color:#B07514}
+.b-cid  .strip{background:linear-gradient(120deg,#6B7F5E,#4C6152)} .b-cid .go{color:#4C6152}
+.login-foot{margin-top:44px;text-align:center;color:var(--cinza);font-size:12.5px}
+.login-foot b{color:var(--mata)}
+
+/* ---------- Login com credenciais ---------- */
+.login-card{margin-top:34px;background:var(--papel);border:1px solid var(--linha);border-radius:18px;box-shadow:var(--sombra);padding:24px 26px;width:100%;max-width:480px}
+.login-card h3{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.login-card .lc-sub{font-size:13px;color:var(--cinza);margin:4px 0 16px}
+.cred-list{margin-top:16px;border-top:1px dashed var(--linha);padding-top:14px;font-size:12.5px}
+.cred-list b{display:block;margin-bottom:8px;color:var(--cinza);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.cred-item{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;background:#FAFAF6;border:1px solid var(--linha);border-radius:10px;padding:8px 12px;margin-bottom:7px;font-size:12.5px;text-align:left;transition:border-color .15s}
+.cred-item:hover{border-color:var(--mata)}
+.cred-item .ci-mail{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--ink)}
+.cred-item .ci-role{color:var(--cinza);font-size:11.5px;white-space:nowrap}
+#logErr{margin-bottom:12px}
+
+/* ---------- Shell da aplicação ---------- */
+.app{display:grid;grid-template-columns:252px 1fr;min-height:100vh}
+.sidebar{background:var(--papel);border-right:1px solid var(--linha);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{padding:20px 20px 16px;border-bottom:1px solid var(--linha)}
+.brand .bm{font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;color:var(--mata);letter-spacing:-.02em}
+.brand .bm span{color:var(--mar)}
+.brand small{display:block;color:var(--cinza);font-size:11px;margin-top:2px;letter-spacing:.06em;text-transform:uppercase}
+nav.menu{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.menu button{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border:none;background:none;border-radius:10px;font-size:14px;font-weight:500;color:var(--cinza);text-align:left;transition:background .15s,color .15s}
+.menu button svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.menu button:hover{background:var(--areia);color:var(--ink)}
+.menu button.on{background:var(--mata);color:#fff}
+.menu .badge-n{margin-left:auto;background:var(--barro);color:#fff;font-size:10.5px;font-weight:700;min-width:18px;height:18px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.menu button.on .badge-n{background:#fff;color:var(--mata)}
+.side-foot{border-top:1px solid var(--linha);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:none}
+.side-foot .who{font-size:13px;line-height:1.3;min-width:0}
+.side-foot .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-foot .who span{color:var(--cinza);font-size:11.5px}
+.sair{margin-left:auto;border:1px solid var(--linha);background:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--cinza)}
+.sair:hover{border-color:var(--barro);color:var(--barro)}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:58px;background:var(--papel);border-bottom:1px solid var(--linha);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:20}
+.crumb{font-size:14px;color:var(--cinza)}
+.crumb b{color:var(--ink)}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.chip-demo{background:#FFF7E8;border:1px solid #F0DCB0;color:#7A5A16;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.04em}
+.view{padding:26px 28px 60px;max-width:1180px;width:100%}
+
+/* ---------- Componentes ---------- */
+.pg-title{font-size:24px;font-weight:800;letter-spacing:-.01em}
+.pg-sub{color:var(--cinza);margin-top:4px;font-size:14px}
+.section-gap{margin-top:26px}
+.grid-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:20px}
+.kpi{background:var(--papel);border:1px solid var(--linha);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sombra)}
+.kpi .lbl{font-size:12px;font-weight:600;color:var(--cinza);text-transform:uppercase;letter-spacing:.06em}
+.kpi .val{font-family:'Bricolage Grotesque';font-size:28px;font-weight:800;margin-top:6px;letter-spacing:-.01em}
+.kpi .sub{font-size:12px;color:var(--cinza);margin-top:2px}
+.kpi .delta-up{color:var(--folha);font-weight:600}
+.kpi .delta-dn{color:var(--barro);font-weight:600}
+.card{background:var(--papel);border:1px solid var(--linha);border-radius:var(--r);box-shadow:var(--sombra)}
+.card .hd{padding:16px 20px 0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card .hd h3{font-size:16px;font-weight:700}
+.card .hd .hint{font-size:12.5px;color:var(--cinza)}
+.card .bd{padding:16px 20px 20px}
+.cols-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols-32{display:grid;grid-template-columns:3fr 2fr;gap:16px}
+@media(max-width:980px){.cols-2,.cols-32{grid-template-columns:1fr}}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--cinza);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--linha)}
+.tbl td{padding:10px;border-bottom:1px solid var(--linha);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#FAFAF6}
+.t-num{text-align:right;font-family:'IBM Plex Mono';font-size:12.5px}
+
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.st-ok{background:#E7F2EA;color:#1E6641}
+.st-pend{background:#FFF3DC;color:#8A6210}
+.st-info{background:#E4EFF1;color:#0C4A57}
+.st-dev{background:#F6E3DA;color:#9C4423}
+.st-block{background:#F4DEDE;color:#8E2F2F}
+.st-off{background:#ECEEE8;color:#5C6B64}
+.adv-1{background:#FFF3DC;color:#8A6210}
+.adv-2{background:#F6E3DA;color:#9C4423}
+.adv-3{background:#F4DEDE;color:#8E2F2F}
+
+.btn{border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn-p{background:var(--mata);color:#fff}
+.btn-s{background:none;border:1px solid var(--linha);color:var(--ink)}
+.btn-s:hover{border-color:var(--cinza)}
+.btn-warn{background:var(--barro);color:#fff}
+.btn-ghost{background:none;border:none;color:var(--mar);font-weight:600;padding:6px 8px}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+
+.input,.select,.textarea{width:100%;border:1px solid var(--linha);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.textarea{min-height:88px;resize:vertical}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;color:var(--ink)}
+.field small{display:block;color:var(--cinza);margin-top:4px;font-size:11.5px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.filters .input,.filters .select{width:auto;min-width:180px}
+
+.alert{border-radius:12px;padding:13px 16px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start}
+.alert b{font-weight:700}
+.al-amber{background:#FFF7E8;border:1px solid #F0DCB0;color:#6B4E0F}
+.al-red{background:#FBEFEF;border:1px solid #ECC9C9;color:#7C2A2A}
+.al-green{background:#EDF6EF;border:1px solid #CFE5D4;color:#20573A}
+.al-blue{background:#EBF3F5;border:1px solid #C9DEE2;color:#0C4A57}
+
+.steps{display:flex;gap:0;margin:6px 0 2px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--cinza);font-weight:600}
+.step .dot{width:22px;height:22px;border-radius:99px;background:#ECEEE8;color:var(--cinza);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.step.done .dot{background:var(--mata);color:#fff}
+.step.done{color:var(--mata)}
+.step-arrow{margin:0 12px;color:var(--linha);font-size:15px}
+
+.adv-scale{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.adv-box{border-radius:12px;padding:12px 14px;border:1px solid var(--linha);background:#FAFAF6}
+.adv-box b{display:block;font-size:13px}
+.adv-box span{font-size:12px;color:var(--cinza)}
+.adv-box.n1{border-color:#F0DCB0;background:#FFFBF0}
+.adv-box.n2{border-color:#E8C4B2;background:#FDF6F1}
+.adv-box.n3{border-color:#E5C2C2;background:#FCF3F3}
+
+.perfil-head{display:flex;gap:16px;align-items:center}
+.perfil-head .avatar{width:56px;height:56px;font-size:19px}
+.perfil-head h3{font-size:19px;font-weight:800}
+.perfil-head .meta{color:var(--cinza);font-size:13px;margin-top:2px}
+.dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:13.5px}
+.dl dt{color:var(--cinza);font-weight:600}
+.dl dd{margin:0}
+
+.bar-row{display:grid;grid-template-columns:150px 1fr 52px;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+.bar-row .lb{color:var(--cinza);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{background:#EDEFE7;border-radius:99px;height:12px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--folha),var(--mata))}
+.bar-row .vl{text-align:right;font-family:'IBM Plex Mono';font-size:11.5px;color:var(--ink)}
+
+.overlay{position:fixed;inset:0;background:rgba(24,36,32,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal{background:var(--papel);border-radius:18px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.modal .m-hd{padding:20px 22px 0;display:flex;align-items:flex-start;gap:12px}
+.modal .m-hd h3{font-size:18px;font-weight:800;flex:1}
+.m-close{border:none;background:var(--areia);width:30px;height:30px;border-radius:99px;font-size:15px;color:var(--cinza)}
+.modal .m-bd{padding:16px 22px 22px}
+.m-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:200;max-width:380px;animation:pop .25s ease}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+.pub-hero{background:linear-gradient(120deg,var(--mata),var(--mar));color:#fff;border-radius:18px;padding:28px;margin-bottom:20px}
+.pub-hero h2{font-size:24px;font-weight:800}
+.pub-hero p{opacity:.88;margin-top:6px;max-width:640px;font-size:14px}
+
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+  nav.menu{flex-direction:row;flex-wrap:wrap}
+  .badges{grid-template-columns:repeat(2,minmax(160px,1fr));width:100%;max-width:560px}
+  .view{padding:20px 16px 60px}
+  .adv-scale{grid-template-columns:1fr}
+  .dl{grid-template-columns:120px 1fr}
+}
+@media(max-width:520px){.badges{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ================= TELA DE ACESSO ================= -->
+<div id="login" class="login">
+  <div class="wordmark">EN<span>GAJA</span></div>
+  <p class="tagline"><b>Environment · Governance · AJA</b> — Plataforma de gestão integrada do Programa Agente Jovem Ambiental · SEMA/CE. Pagamentos, relatoria, inteligência de dados e transparência em um único hub.</p>
+  <span class="demo-note">⚙ Ambiente de demonstração — dados fictícios (LGPD: nenhum dado real de menores)</span>
+
+  <div class="badges">
+    <button class="badge b-sema" onclick="entrar('sema')">
+      <div class="strip"><span class="hole"></span></div>
+      <div class="body">
+        <h3>SEMA · Gestão Estadual</h3>
+        <p>Painel executivo, homologação de relatorias e advertências, folha de bolsas, BI e gestão de usuários.</p>
+        <span class="go">Entrar →</span>
+      </div>
+    </button>
+    <button class="badge b-coord" onclick="entrar('coord')">
+      <div class="strip"><span class="hole"></span></div>
+      <div class="body">
+        <h3>Coordenação Regional</h3>
+        <p>Validação de relatórios, aplicação de advertências, acompanhamento dos jovens do território.</p>
+        <span class="go">Entrar →</span>
+      </div>
+    </button>
+    <button class="badge b-jovem" onclick="entrar('jovem')">
+      <div class="strip"><span class="hole"></span></div>
+      <div class="body">
+        <h3>Jovem AJA</h3>
+        <p>Registro de atividades, extrato da bolsa, situação cadastral e acompanhamento de ocorrências.</p>
+        <span class="go">Entrar →</span>
+      </div>
+    </button>
+    <button class="badge b-cid" onclick="entrar('cidadao')">
+      <div class="strip"><span class="hole"></span></div>
+      <div class="body">
+        <h3>Portal do Cidadão</h3>
+        <p>Transparência e controle social: dados abertos, repasses e impacto do programa. Sem login.</p>
+        <span class="go">Acessar →</span>
+      </div>
+    </button>
+  </div>
+
+  <div class="login-card">
+    <h3>Entrar com e-mail e senha</h3>
+    <p class="lc-sub">Use suas credenciais institucionais — ou os cartões acima para acesso rápido por perfil.</p>
+    <div class="field"><label for="logEmail">E-mail</label>
+      <input class="input" id="logEmail" type="email" autocomplete="username" placeholder="usuario@sema.ce.gov.br"></div>
+    <div class="field"><label for="logSenha">Senha</label>
+      <input class="input" id="logSenha" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginCred()"></div>
+    <div id="logErr" class="alert al-red" hidden></div>
+    <button class="btn btn-p" style="width:100%" onclick="loginCred()">Entrar na plataforma</button>
+    <div class="cred-list">
+      <b>Credenciais de demonstração — clique para preencher</b>
+      <button class="cred-item" onclick="preencher('hermogenes@sema.ce.gov.br')"><span class="ci-mail">hermogenes@sema.ce.gov.br</span><span class="ci-role">Gestor Estadual · SEMA</span></button>
+      <button class="cred-item" onclick="preencher('camila.rocha@sema.ce.gov.br')"><span class="ci-mail">camila.rocha@sema.ce.gov.br</span><span class="ci-role">Coordenação Regional</span></button>
+      <button class="cred-item" onclick="preencher('maria.andrade@aja.ce.gov.br')"><span class="ci-mail">maria.andrade@aja.ce.gov.br</span><span class="ci-role">Jovem AJA</span></button>
+      <button class="cred-item" onclick="preencher('rafael.menezes@aja.ce.gov.br')"><span class="ci-mail">rafael.menezes@aja.ce.gov.br</span><span class="ci-role">Conta suspensa (demo)</span></button>
+      <p style="color:var(--cinza);margin-top:6px">Senha única de demonstração: <span class="mono" style="font-weight:600">engaja2026</span></p>
+    </div>
+  </div>
+
+  <p class="login-foot">Programa Agente Jovem Ambiental · Lei Estadual nº 17.383/2021 · 184 municípios do Ceará<br><b>ENGAJA</b> — protótipo funcional de plataforma de governança digital</p>
+</div>
+
+<!-- ================= APLICAÇÃO ================= -->
+<div id="app" class="app" hidden>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="bm">EN<span>GAJA</span></div>
+      <small>Hub do Programa AJA</small>
+    </div>
+    <nav class="menu" id="nav" aria-label="Navegação principal"></nav>
+    <div class="side-foot">
+      <div class="avatar" id="uAvatar">–</div>
+      <div class="who"><b id="uNome">–</b><span id="uPapel">–</span></div>
+      <button class="sair" onclick="sair()">Sair</button>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb"></div>
+      <div class="top-right">
+        <span class="chip-demo">DEMONSTRAÇÃO</span>
+      </div>
+    </header>
+    <main class="view" id="viewRoot"></main>
+  </div>
+</div>
+
+<div id="overlay" class="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" id="modalCard"></div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* =====================================================
+   ENGAJA · Environment - Governance - AJA
+   Protótipo funcional · dados fictícios de demonstração
+   ===================================================== */
+
+const VALOR_BOLSA = 500;
+const COMPETENCIA = 'Julho/2026';
+
+const DB = {
+  meses: ['Fev','Mar','Abr','Mai','Jun','Jul'],
+  engajamento: [64,68,71,75,73,79],
+  execucao: 72,
+  regioes: [
+    {nome:'Grande Fortaleza', jovens:2140, acoes:412},
+    {nome:'Cariri', jovens:1610, acoes:355},
+    {nome:'Sertão Central', jovens:1385, acoes:298},
+    {nome:'Litoral Norte', jovens:1290, acoes:276},
+    {nome:'Vale do Jaguaribe', jovens:1180, acoes:241},
+    {nome:'Litoral Leste', jovens:1065, acoes:224},
+    {nome:'Serra da Ibiapaba', jovens:980, acoes:203},
+    {nome:'Maciço de Baturité', jovens:870, acoes:187}
+  ],
+  jovens: [
+    {id:'J01', nome:'Ana Beatriz Sousa', municipio:'Caucaia', regiao:'Grande Fortaleza', eng:92, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J02', nome:'Carlos Eduardo Lima', municipio:'Fortaleza', regiao:'Grande Fortaleza', eng:78, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J03', nome:'Maria Vitória Andrade', municipio:'Maracanaú', regiao:'Grande Fortaleza', eng:85, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J04', nome:'João Pedro Farias', municipio:'Caucaia', regiao:'Grande Fortaleza', eng:54, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J05', nome:'Larissa Nogueira', municipio:'Sobral', regiao:'Litoral Norte', eng:88, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J06', nome:'Rafael Menezes', municipio:'Juazeiro do Norte', regiao:'Cariri', eng:47, bolsa:'suspensa', ciclo:'2026.1'},
+    {id:'J07', nome:'Beatriz Carvalho', municipio:'Quixadá', regiao:'Sertão Central', eng:91, bolsa:'ativa', ciclo:'2026.1'},
+    {id:'J08', nome:'Thiago Albuquerque', municipio:'Aracati', regiao:'Litoral Leste', eng:63, bolsa:'ativa', ciclo:'2026.1'}
+  ],
+  usuarios: [
+    {id:'U01', nome:'Hermógenes Henrique O. Nascimento', papel:'Gestor Estadual (SEMA)', regiao:'Estadual', municipio:'Fortaleza', email:'aja@sema.ce.gov.br', status:'ativo'},
+    {id:'U02', nome:'Camila Rocha', papel:'Coordenação Regional', regiao:'Grande Fortaleza', municipio:'Fortaleza', email:'camila.rocha@sema.ce.gov.br', status:'ativo'},
+    {id:'U03', nome:'André Sales', papel:'Coordenação Regional', regiao:'Litoral Norte', municipio:'Sobral', email:'andre.sales@sema.ce.gov.br', status:'ativo'},
+    {id:'U04', nome:'Patrícia Bezerra', papel:'Coordenação Regional', regiao:'Cariri', municipio:'Crato', email:'patricia.bezerra@sema.ce.gov.br', status:'ativo'},
+    {id:'U05', nome:'Felipe Aragão', papel:'Analista de Dados (SEMA)', regiao:'Estadual', municipio:'Fortaleza', email:'felipe.aragao@sema.ce.gov.br', status:'ativo'},
+    {id:'J01', nome:'Ana Beatriz Sousa', papel:'Jovem AJA', regiao:'Grande Fortaleza', municipio:'Caucaia', email:'ana.sousa@aja.ce.gov.br', status:'ativo'},
+    {id:'J02', nome:'Carlos Eduardo Lima', papel:'Jovem AJA', regiao:'Grande Fortaleza', municipio:'Fortaleza', email:'carlos.lima@aja.ce.gov.br', status:'ativo'},
+    {id:'J03', nome:'Maria Vitória Andrade', papel:'Jovem AJA', regiao:'Grande Fortaleza', municipio:'Maracanaú', email:'maria.andrade@aja.ce.gov.br', status:'ativo'},
+    {id:'J04', nome:'João Pedro Farias', papel:'Jovem AJA', regiao:'Grande Fortaleza', municipio:'Caucaia', email:'joao.farias@aja.ce.gov.br', status:'ativo'},
+    {id:'J06', nome:'Rafael Menezes', papel:'Jovem AJA', regiao:'Cariri', municipio:'Juazeiro do Norte', email:'rafael.menezes@aja.ce.gov.br', status:'suspenso'}
+  ],
+  relatorios: [
+    {id:'R107', jovem:'J08', titulo:'Monitoramento de dunas', municipio:'Aracati', data:'28/06/2026', status:'devolvido', obs:'Fotos sem geolocalização — reenviar com registro georreferenciado.'},
+    {id:'R106', jovem:'J05', titulo:'Coleta seletiva comunitária', municipio:'Sobral', data:'30/06/2026', status:'homologado', obs:''},
+    {id:'R105', jovem:'J07', titulo:'Recuperação de nascente', municipio:'Quixadá', data:'05/07/2026', status:'validado', obs:''},
+    {id:'R104', jovem:'J02', titulo:'Educação ambiental — Escola Dom Aloísio', municipio:'Fortaleza', data:'08/07/2026', status:'validado', obs:''},
+    {id:'R103', jovem:'J04', titulo:'Plantio de mudas nativas', municipio:'Caucaia', data:'10/07/2026', status:'enviado', obs:''},
+    {id:'R102', jovem:'J03', titulo:'Oficina de compostagem escolar', municipio:'Maracanaú', data:'13/07/2026', status:'enviado', obs:''},
+    {id:'R101', jovem:'J01', titulo:'Mutirão de limpeza — Praia do Icaraí', municipio:'Caucaia', data:'14/07/2026', status:'enviado', obs:''}
+  ],
+  advertencias: [
+    {id:'A01', jovem:'J02', nivel:1, motivo:'Relatório com inconsistência', just:'Divergência entre datas informadas e registro fotográfico no relatório de maio.', data:'12/05/2026', autor:'Camila Rocha (Coord. Grande Fortaleza)', status:'homologada', recurso:null},
+    {id:'A02', jovem:'J06', nivel:2, motivo:'Ausência não justificada em ação', just:'Ausência em duas ações obrigatórias do ciclo sem justificativa formal.', data:'03/06/2026', autor:'Patrícia Bezerra (Coord. Cariri)', status:'homologada', recurso:null}
+  ],
+  extratoJ03: [
+    {comp:'Fevereiro/2026', valor:500, status:'pago', data:'05/03/2026'},
+    {comp:'Março/2026', valor:500, status:'pago', data:'05/04/2026'},
+    {comp:'Abril/2026', valor:500, status:'pago', data:'05/05/2026'},
+    {comp:'Maio/2026', valor:500, status:'pago', data:'05/06/2026'},
+    {comp:'Junho/2026', valor:500, status:'pago', data:'03/07/2026'},
+    {comp:'Julho/2026', valor:500, status:'previsto', data:'05/08/2026'}
+  ]
+};
+
+let seqAdv = 3, seqRel = 108, seqUsr = 6;
+const state = { perfil:null, user:null, view:null };
+
+/* ---------- Utilidades ---------- */
+const $ = s => document.querySelector(s);
+const brl = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const jovemById = id => DB.jovens.find(j=>j.id===id);
+const iniciais = n => n.split(' ').filter(Boolean).map(p=>p[0]).slice(0,2).join('').toUpperCase();
+const avatarCor = papel => papel && papel.includes('Jovem') ? 'var(--sol)' : (papel && papel.includes('Coorden') ? 'var(--folha)' : 'var(--mar)');
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(t._tm); t._tm = setTimeout(()=> t.hidden = true, 3600);
+}
+function abrirModal(html){ $('#modalCard').innerHTML = html; $('#overlay').hidden = false; }
+function fecharModal(){ $('#overlay').hidden = true; }
+$('#overlay') && document.addEventListener('click', e=>{ if(e.target.id==='overlay') fecharModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') fecharModal(); });
+
+/* ---------- Regras de negócio ---------- */
+function advertenciasDe(id, incluirPend=true){
+  return DB.advertencias.filter(a=>a.jovem===id && (a.status==='homologada' || (incluirPend && a.status==='pendente')));
+}
+function proximoNivel(id){ return Math.min(advertenciasDe(id).length + 1, 3); }
+function statusBolsa(j){
+  if(j.bolsa==='desligado') return {t:'Desligado', c:'st-block'};
+  if(j.bolsa==='suspensa')  return {t:'Suspensa', c:'st-dev'};
+  return {t:'Ativa', c:'st-ok'};
+}
+function statusFolha(j){
+  if(j.bolsa==='desligado') return {t:'Bloqueado', c:'st-block'};
+  if(j.bolsa==='suspensa')  return {t:'Suspenso', c:'st-dev'};
+  return {t:'Apto', c:'st-ok'};
+}
+function chipRel(st){
+  return {enviado:'<span class="chip st-pend">Enviado</span>',
+          validado:'<span class="chip st-info">Validado (aguarda SEMA)</span>',
+          homologado:'<span class="chip st-ok">Homologado</span>',
+          devolvido:'<span class="chip st-dev">Devolvido</span>'}[st] || st;
+}
+function chipAdvStatus(st){
+  return {pendente:'<span class="chip st-pend">Aguarda homologação</span>',
+          homologada:'<span class="chip st-block">Homologada</span>',
+          revertida:'<span class="chip st-off">Revertida</span>'}[st] || st;
+}
+function chipNivel(n){
+  const tx = {1:'1ª advertência', 2:'2ª advertência', 3:'3ª advertência'}[n];
+  return `<span class="chip adv-${n}">${tx}</span>`;
+}
+function efeitoNivel(n){
+  return {1:'Notificação formal registrada no histórico do jovem. Sem impacto na bolsa.',
+          2:'Suspensão preventiva da bolsa por 30 dias (a partir da homologação pela SEMA).',
+          3:'Desligamento do programa e bloqueio definitivo da bolsa (após homologação).'}[n];
+}
+
+/* ---------- Gráficos (SVG nativo) ---------- */
+function chartLinha(vals, labels){
+  const W=560, H=200, p=32, max=100;
+  const pts = vals.map((v,i)=>{
+    const x = p + i*(W-2*p)/(vals.length-1);
+    const y = H-p - (v/max)*(H-2*p);
+    return {x,y,v};
+  });
+  const poly = pts.map(pt=>`${pt.x},${pt.y}`).join(' ');
+  const area = `M${pts[0].x},${H-p} L` + poly.split(' ').join(' L ') + ` L${pts[pts.length-1].x},${H-p} Z`;
+  let g = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolução do engajamento" style="width:100%;height:auto">`;
+  [25,50,75,100].forEach(l=>{
+    const y = H-p - (l/max)*(H-2*p);
+    g += `<line x1="${p}" y1="${y}" x2="${W-p}" y2="${y}" stroke="#E1E3D8" stroke-width="1"/>
+          <text x="${p-8}" y="${y+4}" font-size="9.5" fill="#5C6B64" text-anchor="end" font-family="IBM Plex Mono">${l}</text>`;
+  });
+  g += `<path d="${area}" fill="rgba(20,82,74,.08)"/>`;
+  g += `<polyline points="${poly}" fill="none" stroke="#14524A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((pt,i)=>{
+    g += `<circle cx="${pt.x}" cy="${pt.y}" r="4" fill="#fff" stroke="#14524A" stroke-width="2"/>
+          <text x="${pt.x}" y="${pt.y-10}" font-size="10" fill="#14524A" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono">${pt.v}</text>
+          <text x="${pt.x}" y="${H-p+16}" font-size="10.5" fill="#5C6B64" text-anchor="middle">${labels[i]}</text>`;
+  });
+  return g + '</svg>';
+}
+function chartBarras(itens, campo, sufixo=''){
+  const max = Math.max(...itens.map(i=>i[campo]));
+  return itens.map(i=>`
+    <div class="bar-row">
+      <span class="lb" title="${i.nome}">${i.nome}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(i[campo]/max*100).toFixed(1)}%"></div></div>
+      <span class="vl">${i[campo].toLocaleString('pt-BR')}${sufixo}</span>
+    </div>`).join('');
+}
+function chartDonut(pct, cor='#14524A', rotulo=''){
+  const r=54, c=2*Math.PI*r;
+  return `<svg viewBox="0 0 140 140" style="width:150px;height:150px" role="img" aria-label="${rotulo}: ${pct}%">
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="#EDEFE7" stroke-width="14"/>
+    <circle cx="70" cy="70" r="${r}" fill="none" stroke="${cor}" stroke-width="14" stroke-linecap="round"
+      stroke-dasharray="${(pct/100*c).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 70 70)"/>
+    <text x="70" y="66" text-anchor="middle" font-size="24" font-weight="800" fill="#182420" font-family="Bricolage Grotesque">${pct}%</text>
+    <text x="70" y="86" text-anchor="middle" font-size="9.5" fill="#5C6B64">${rotulo}</text>
+  </svg>`;
+}
+
+/* ---------- Ícones ---------- */
+const IC = {
+  painel:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>',
+  rel:'<svg viewBox="0 0 24 24"><path d="M6 2.5h9l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg>',
+  pag:'<svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19"/><path d="M6 15h4"/></svg>',
+  bi:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  usr:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 14.8c2.8.1 5 1.7 5.9 4.7"/></svg>',
+  olho:'<svg viewBox="0 0 24 24"><path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  folha:'<svg viewBox="0 0 24 24"><path d="M5 20c0-9 5-14 14-15-1 9-6 14-14 15z"/><path d="M5 20c3-5 7-9 11-11"/></svg>',
+  id:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16.5c.6-1.8 1.7-2.7 3-2.7s2.4.9 3 2.7"/><path d="M14.5 10h5M14.5 14h4"/></svg>'
+};
+
+/* ---------- Perfis e navegação ---------- */
+const PERFIS = {
+  sema: { nome:'Hermógenes Henrique', papel:'Gestor Estadual · SEMA/CE', crumb:'SEMA · Gestão Estadual', views:[
+    {id:'painel', label:'Painel executivo', ic:IC.painel, fn:vPainelSema},
+    {id:'relatoria', label:'Relatoria & Advertências', ic:IC.rel, fn:vRelatoriaSema, badge:()=> DB.relatorios.filter(r=>r.status==='validado').length + DB.advertencias.filter(a=>a.status==='pendente').length},
+    {id:'pagamentos', label:'Pagamentos', ic:IC.pag, fn:vPagamentosSema},
+    {id:'bi', label:'BI de Dados', ic:IC.bi, fn:vBI},
+    {id:'usuarios', label:'Perfis de Usuários', ic:IC.usr, fn:vUsuarios}
+  ]},
+  coord: { nome:'Camila Rocha', papel:'Coordenação Regional · Grande Fortaleza', crumb:'Coordenação Regional · Grande Fortaleza', regiao:'Grande Fortaleza', views:[
+    {id:'painel', label:'Painel regional', ic:IC.painel, fn:vPainelCoord},
+    {id:'relatoria', label:'Relatoria & Advertências', ic:IC.rel, fn:vRelatoriaCoord, badge:()=> DB.relatorios.filter(r=>r.status==='enviado' && jovemById(r.jovem).regiao==='Grande Fortaleza').length},
+    {id:'jovens', label:'Jovens do território', ic:IC.usr, fn:vJovensCoord},
+    {id:'pagamentos', label:'Pagamentos (região)', ic:IC.pag, fn:vPagamentosCoord}
+  ]},
+  jovem: { nome:'Maria Vitória Andrade', papel:'Jovem AJA · Maracanaú', crumb:'Área do Jovem AJA', jid:'J03', views:[
+    {id:'painel', label:'Meu painel', ic:IC.painel, fn:vPainelJovem},
+    {id:'atividades', label:'Minhas atividades', ic:IC.folha, fn:vAtividades},
+    {id:'bolsa', label:'Minha bolsa', ic:IC.pag, fn:vBolsa},
+    {id:'perfil', label:'Meu perfil', ic:IC.id, fn:vPerfilJovem}
+  ]},
+  cidadao: { nome:'Cidadão', papel:'Acesso público · sem login', crumb:'Portal do Cidadão · Transparência', views:[
+    {id:'transparencia', label:'Transparência', ic:IC.olho, fn:vTransparencia}
+  ]}
+};
+
+/* ---------- Autenticação simulada (demonstração) ---------- */
+const SENHA_DEMO = 'engaja2026';
+const CREDENCIAIS = {
+  'hermogenes@sema.ce.gov.br':    {perfil:'sema',  ativo:true},
+  'camila.rocha@sema.ce.gov.br':  {perfil:'coord', ativo:true},
+  'maria.andrade@aja.ce.gov.br':  {perfil:'jovem', ativo:true},
+  'rafael.menezes@aja.ce.gov.br': {perfil:'jovem', ativo:false}
+};
+function preencher(email){
+  $('#logEmail').value = email;
+  $('#logSenha').value = SENHA_DEMO;
+  $('#logErr').hidden = true;
+  $('#logSenha').focus();
+}
+function erroLogin(msg){
+  const e = $('#logErr');
+  e.innerHTML = '⚠️ <span>'+msg+'</span>';
+  e.hidden = false;
+}
+function loginCred(){
+  const email = $('#logEmail').value.trim().toLowerCase();
+  const senha = $('#logSenha').value;
+  if(!email || !senha){ erroLogin('Informe e-mail e senha para entrar.'); return; }
+  const c = CREDENCIAIS[email];
+  if(!c){ erroLogin('Usuário não encontrado. Use uma das credenciais de demonstração abaixo.'); return; }
+  if(senha !== SENHA_DEMO){ erroLogin('Senha incorreta. Nesta demonstração, a senha é <b>engaja2026</b>.'); return; }
+  if(!c.ativo){ erroLogin('<b>Conta inativa (suspensa por advertência).</b> O acesso deste usuário está bloqueado — procure sua Coordenação Regional. Este cenário demonstra a integração entre advertências e o controle de acesso.'); return; }
+  $('#logErr').hidden = true;
+  $('#logSenha').value = '';
+  entrar(c.perfil);
+  toast('Bem-vindo(a)! Sessão iniciada como '+PERFIS[c.perfil].papel+'.');
+}
+
+function entrar(p){
+  state.perfil = p; state.user = PERFIS[p];
+  $('#login').hidden = true; $('#app').hidden = false;
+  $('#uNome').textContent = state.user.nome;
+  $('#uPapel').textContent = state.user.papel;
+  $('#uAvatar').textContent = iniciais(state.user.nome);
+  $('#uAvatar').style.background = avatarCor(state.user.papel);
+  setView(state.user.views[0].id);
+  window.scrollTo(0,0);
+}
+function sair(){ state.perfil = null; $('#app').hidden = true; $('#login').hidden = false; fecharModal(); }
+
+function renderNav(){
+  $('#nav').innerHTML = state.user.views.map(v=>{
+    const n = v.badge ? v.badge() : 0;
+    return `<button class="${state.view===v.id?'on':''}" onclick="setView('${v.id}')">${v.ic}<span>${v.label}</span>${n?`<span class="badge-n">${n}</span>`:''}</button>`;
+  }).join('');
+}
+function setView(id){
+  state.view = id;
+  const v = state.user.views.find(x=>x.id===id);
+  $('#crumb').innerHTML = `${state.user.crumb} <span style="opacity:.5">/</span> <b>${v.label}</b>`;
+  $('#viewRoot').innerHTML = v.fn();
+  renderNav();
+}
+function refresh(){ setView(state.view); }
+
+/* ---------- Ações: relatoria e advertências ---------- */
+function validarRel(id){
+  const r = DB.relatorios.find(x=>x.id===id);
+  r.status = 'validado'; r.obs = '';
+  toast(`Relatório ${id} validado — encaminhado à homologação da SEMA.`); refresh();
+}
+function modalDevolver(id){
+  const r = DB.relatorios.find(x=>x.id===id);
+  abrirModal(`
+    <div class="m-hd"><h3>Devolver relatório ${id}</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <p style="font-size:13.5px;color:var(--cinza)">${r.titulo} — ${jovemById(r.jovem).nome}</p>
+      <div class="field" style="margin-top:12px"><label for="devMotivo">Motivo da devolução (obrigatório)</label>
+        <textarea class="textarea" id="devMotivo" placeholder="Descreva o ajuste necessário para reenvio…"></textarea></div>
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="devolverRel('${id}')">Devolver ao jovem</button></div>
+    </div>`);
+}
+function devolverRel(id){
+  const m = $('#devMotivo').value.trim();
+  if(!m){ toast('Informe o motivo da devolução.'); return; }
+  const r = DB.relatorios.find(x=>x.id===id);
+  r.status = 'devolvido'; r.obs = m;
+  fecharModal(); toast(`Relatório ${id} devolvido ao jovem para ajuste.`); refresh();
+}
+function homologarRel(id){
+  const r = DB.relatorios.find(x=>x.id===id);
+  r.status = 'homologado';
+  toast(`Relatório ${id} homologado pela SEMA.`); refresh();
+}
+
+/* --- Camada de advertência --- */
+function modalAdvertencia(jid, relId){
+  const j = jovemById(jid);
+  const hist = advertenciasDe(jid).length;
+  const nivel = proximoNivel(jid);
+  abrirModal(`
+    <div class="m-hd"><h3>Aplicar advertência</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <div class="alert al-blue" style="margin-bottom:14px">ℹ️ <span><b>${j.nome}</b> — ${j.municipio} · ${j.regiao}. Histórico no ciclo: <b>${hist} advertência(s)</b>. Nível sugerido pelo sistema: <b>${nivel}ª</b>.${relId?` Vinculada ao relatório <b>${relId}</b>.`:''}</span></div>
+      <div class="field"><label for="advNivel">Nível da advertência</label>
+        <select class="select" id="advNivel" onchange="$('#advEfeito').textContent = efeitoNivel(+this.value)">
+          <option value="1" ${nivel===1?'selected':''}>1ª advertência — notificação formal</option>
+          <option value="2" ${nivel===2?'selected':''}>2ª advertência — suspensão da bolsa (30 dias)</option>
+          <option value="3" ${nivel===3?'selected':''}>3ª advertência — desligamento do programa</option>
+        </select>
+        <small id="advEfeito">${efeitoNivel(nivel)}</small></div>
+      <div class="field"><label for="advMotivo">Motivo</label>
+        <select class="select" id="advMotivo">
+          <option>Ausência não justificada em ação</option>
+          <option>Relatório com inconsistência</option>
+          <option>Descumprimento de prazo de entrega</option>
+          <option>Conduta incompatível com o programa</option>
+        </select></div>
+      <div class="field"><label for="advJust">Justificativa (obrigatória — integra a trilha de auditoria)</label>
+        <textarea class="textarea" id="advJust" placeholder="Descreva os fatos, datas e evidências que fundamentam a advertência…"></textarea>
+        <small>A advertência só produz efeitos após homologação pela SEMA. O jovem é notificado e pode apresentar recurso (contraditório e ampla defesa).</small></div>
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-warn" onclick="aplicarAdvertencia('${jid}', ${relId?`'${relId}'`:'null'})">Registrar advertência</button></div>
+    </div>`);
+}
+function aplicarAdvertencia(jid, relId){
+  const just = $('#advJust').value.trim();
+  if(!just){ toast('A justificativa é obrigatória (trilha de auditoria).'); return; }
+  const nivel = +$('#advNivel').value;
+  DB.advertencias.push({ id:'A'+String(seqAdv++).padStart(2,'0'), jovem:jid, nivel,
+    motivo:$('#advMotivo').value, just, data:'18/07/2026',
+    autor:`${state.user.nome} (Coord. ${state.user.regiao||''})`, status:'pendente', recurso:null });
+  if(relId){
+    const r = DB.relatorios.find(x=>x.id===relId);
+    if(r && r.status==='enviado'){ r.status='devolvido'; r.obs='Devolvido com registro de advertência — ver ocorrência no perfil.'; }
+  }
+  fecharModal();
+  toast(`Advertência (${nivel}ª) registrada para ${jovemById(jid).nome} — aguardando homologação da SEMA.`);
+  refresh();
+}
+function homologarAdv(id){
+  const a = DB.advertencias.find(x=>x.id===id);
+  a.status = 'homologada';
+  const j = jovemById(a.jovem);
+  if(a.nivel===3){ j.bolsa='desligado'; }
+  else if(a.nivel===2 && j.bolsa!=='desligado'){ j.bolsa='suspensa'; }
+  toast(`Advertência ${id} homologada. ${a.nivel>=2 ? 'Situação da bolsa atualizada automaticamente no módulo de Pagamentos.' : 'Registrada no histórico do jovem.'}`);
+  refresh();
+}
+function reverterAdv(id){
+  const a = DB.advertencias.find(x=>x.id===id);
+  a.status = 'revertida';
+  const j = jovemById(a.jovem);
+  const restantes = advertenciasDe(a.jovem, false);
+  if(restantes.some(x=>x.nivel===3)) j.bolsa='desligado';
+  else if(restantes.some(x=>x.nivel===2)) j.bolsa='suspensa';
+  else j.bolsa='ativa';
+  toast(`Advertência ${id} revertida pela SEMA. Situação da bolsa recalculada.`);
+  refresh();
+}
+function apresentarRecurso(id){
+  const a = DB.advertencias.find(x=>x.id===id);
+  a.recurso = 'em análise';
+  toast('Recurso registrado — será analisado pela Coordenação e pela SEMA.');
+  refresh();
+}
+
+/* ---------- Blocos reutilizáveis ---------- */
+function escalaAdvertencias(){
+  return `<div class="adv-scale">
+    <div class="adv-box n1"><b>1ª advertência</b><span>Notificação formal no histórico. Sem impacto na bolsa.</span></div>
+    <div class="adv-box n2"><b>2ª advertência</b><span>Suspensão da bolsa por 30 dias após homologação da SEMA.</span></div>
+    <div class="adv-box n3"><b>3ª advertência</b><span>Desligamento do programa e bloqueio da bolsa.</span></div>
+  </div>`;
+}
+function fluxoRelatoria(){
+  return `<div class="steps">
+    <span class="step done"><span class="dot">1</span>Jovem envia</span><span class="step-arrow">→</span>
+    <span class="step done"><span class="dot">2</span>Coordenação valida / devolve / adverte</span><span class="step-arrow">→</span>
+    <span class="step done"><span class="dot">3</span>SEMA homologa</span><span class="step-arrow">→</span>
+    <span class="step done"><span class="dot">4</span>Libera bolsa & alimenta o BI</span>
+  </div>`;
+}
+function tabelaAdvertencias(lista, acoes){
+  if(!lista.length) return '<p style="color:var(--cinza);font-size:13.5px;padding:6px 0">Nenhuma ocorrência registrada. ✅</p>';
+  return `<table class="tbl"><thead><tr><th>Jovem</th><th>Nível</th><th>Motivo</th><th>Autor · Data</th><th>Situação</th>${acoes?'<th>Ações</th>':''}</tr></thead><tbody>
+  ${lista.map(a=>{
+    const j = jovemById(a.jovem);
+    return `<tr><td><b>${j.nome}</b><br><span style="color:var(--cinza);font-size:12px">${j.municipio}</span></td>
+      <td>${chipNivel(a.nivel)}</td>
+      <td style="max-width:220px">${a.motivo}<br><span style="color:var(--cinza);font-size:12px">${a.just}</span>${a.recurso?`<br><span class="chip st-info" style="margin-top:4px">Recurso ${a.recurso}</span>`:''}</td>
+      <td style="font-size:12.5px;color:var(--cinza)">${a.autor}<br>${a.data}</td>
+      <td>${chipAdvStatus(a.status)}</td>
+      ${acoes?`<td><div class="btn-row">
+        ${a.status==='pendente'?`<button class="btn btn-p btn-sm" onclick="homologarAdv('${a.id}')">Homologar</button>
+        <button class="btn btn-s btn-sm" onclick="reverterAdv('${a.id}')">Reverter</button>`:
+        (a.status==='homologada'?`<button class="btn btn-s btn-sm" onclick="reverterAdv('${a.id}')">Reverter</button>`:'—')}
+      </div></td>`:''}</tr>`;
+  }).join('')}</tbody></table>`;
+}
+function modalPerfilJovem(jid){
+  const j = jovemById(jid);
+  const sb = statusBolsa(j);
+  const advs = DB.advertencias.filter(a=>a.jovem===jid);
+  abrirModal(`
+    <div class="m-hd"><h3>Perfil do jovem</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <div class="perfil-head" style="margin-bottom:16px">
+        <div class="avatar" style="background:var(--sol)">${iniciais(j.nome)}</div>
+        <div><h3 style="font-size:17px">${j.nome}</h3><div class="meta">${j.municipio} · ${j.regiao} · Ciclo ${j.ciclo}</div></div>
+      </div>
+      <dl class="dl">
+        <dt>Matrícula</dt><dd class="mono">${j.id}-AJA-2026</dd>
+        <dt>Engajamento</dt><dd>${j.eng}% ${j.eng<65?'<span class="chip st-dev" style="margin-left:6px">Risco de evasão</span>':''}</dd>
+        <dt>Bolsa</dt><dd><span class="chip ${sb.c}">${sb.t}</span></dd>
+        <dt>Advertências</dt><dd>${advertenciasDe(jid).length} no ciclo</dd>
+      </dl>
+      ${advs.length?`<h3 style="font-size:14px;margin:16px 0 8px">Histórico de ocorrências</h3>${advs.map(a=>`
+        <div class="alert ${a.nivel===1?'al-amber':'al-red'}" style="margin-bottom:8px">${chipNivel(a.nivel)} <span><b>${a.motivo}</b> — ${a.just}<br><span style="font-size:12px;opacity:.8">${a.autor} · ${a.data} · ${a.status}</span></span></div>`).join('')}`:''}
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Fechar</button>
+      ${state.perfil==='coord'?`<button class="btn btn-warn" onclick="fecharModal();modalAdvertencia('${jid}',null)">Aplicar advertência</button>`:''}</div>
+    </div>`);
+}
+
+/* ================= VISÕES · SEMA ================= */
+function vPainelSema(){
+  const totJ = DB.regioes.reduce((s,r)=>s+r.jovens,0);
+  const totA = DB.regioes.reduce((s,r)=>s+r.acoes,0);
+  const risco = DB.jovens.filter(j=>j.eng<65);
+  return `
+  <h1 class="pg-title">Painel executivo do Programa AJA</h1>
+  <p class="pg-sub">Visão estadual consolidada · Ciclo 2026.1 · Competência ${COMPETENCIA}</p>
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lbl">Jovens ativos</div><div class="val">${totJ.toLocaleString('pt-BR')}</div><div class="sub"><span class="delta-up">▲ 4,2%</span> vs. ciclo anterior</div></div>
+    <div class="kpi"><div class="lbl">Municípios</div><div class="val">184</div><div class="sub">100% do território cearense</div></div>
+    <div class="kpi"><div class="lbl">Ações no mês</div><div class="val">${totA.toLocaleString('pt-BR')}</div><div class="sub">registradas via app de campo</div></div>
+    <div class="kpi"><div class="lbl">Folha mensal</div><div class="val">${brl(totJ*VALOR_BOLSA)}</div><div class="sub">bolsas de ${brl(VALOR_BOLSA)}</div></div>
+  </div>
+  <div class="cols-32 section-gap">
+    <div class="card"><div class="hd"><h3>Engajamento médio dos jovens</h3><span class="hint">índice SISAJA · 2026</span></div>
+      <div class="bd">${chartLinha(DB.engajamento, DB.meses)}</div></div>
+    <div class="card"><div class="hd"><h3>⚠ Alerta preditivo de evasão</h3><span class="hint">modelo de ML (simulado)</span></div>
+      <div class="bd">
+        <p style="font-size:12.5px;color:var(--cinza);margin-bottom:10px">Jovens com engajamento abaixo do limiar (65) sinalizados para busca ativa pelas coordenações.</p>
+        <table class="tbl"><thead><tr><th>Jovem</th><th>Eng.</th><th></th></tr></thead><tbody>
+        ${risco.map(j=>`<tr><td><b>${j.nome}</b><br><span style="font-size:12px;color:var(--cinza)">${j.municipio}</span></td>
+          <td><span class="chip ${j.eng<55?'st-block':'st-dev'}">${j.eng}%</span></td>
+          <td><button class="btn btn-ghost btn-sm" onclick="modalPerfilJovem('${j.id}')">Ver perfil</button></td></tr>`).join('')}
+        </tbody></table>
+      </div></div>
+  </div>
+  <div class="card section-gap"><div class="hd"><h3>Jovens por região de planejamento</h3><span class="hint">amostra de 8 regiões · dados simulados</span></div>
+    <div class="bd">${chartBarras(DB.regioes,'jovens')}</div></div>`;
+}
+
+function vRelatoriaSema(){
+  const homol = DB.relatorios.filter(r=>r.status==='validado');
+  const advPend = DB.advertencias.filter(a=>a.status==='pendente');
+  return `
+  <h1 class="pg-title">Relatoria & Advertências — homologação SEMA</h1>
+  <p class="pg-sub">Instância final do fluxo: homologa relatórios validados e as advertências aplicadas pelas coordenações regionais.</p>
+  <div class="card section-gap"><div class="hd"><h3>Fluxo da relatoria</h3></div><div class="bd">${fluxoRelatoria()}</div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>Relatórios aguardando homologação</h3><span class="hint">${homol.length} pendente(s)</span></div>
+    <div class="bd">${homol.length?`<table class="tbl"><thead><tr><th>ID</th><th>Atividade</th><th>Jovem</th><th>Data</th><th>Ações</th></tr></thead><tbody>
+      ${homol.map(r=>{const j=jovemById(r.jovem);return `<tr><td class="mono">${r.id}</td><td><b>${r.titulo}</b><br><span style="font-size:12px;color:var(--cinza)">${r.municipio}</span></td>
+        <td>${j.nome}</td><td>${r.data}</td>
+        <td><div class="btn-row"><button class="btn btn-p btn-sm" onclick="homologarRel('${r.id}')">Homologar</button>
+        <button class="btn btn-s btn-sm" onclick="modalDevolver('${r.id}')">Devolver</button></div></td></tr>`;}).join('')}
+      </tbody></table>`:'<p style="color:var(--cinza);font-size:13.5px">Nenhum relatório aguardando homologação. ✅</p>'}</div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>🛡 Advertências aguardando homologação</h3><span class="hint">efeitos sobre a bolsa só ocorrem após decisão da SEMA</span></div>
+    <div class="bd">
+      ${escalaAdvertencias()}
+      <div style="margin-top:16px">${tabelaAdvertencias(advPend, true)}</div>
+    </div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>Histórico de advertências do ciclo</h3></div>
+    <div class="bd">${tabelaAdvertencias(DB.advertencias.filter(a=>a.status!=='pendente'), true)}</div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>Todos os relatórios do ciclo</h3></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>ID</th><th>Atividade</th><th>Jovem</th><th>Data</th><th>Situação</th></tr></thead><tbody>
+      ${DB.relatorios.map(r=>{const j=jovemById(r.jovem);return `<tr><td class="mono">${r.id}</td><td>${r.titulo}${r.obs?`<br><span style="font-size:12px;color:var(--barro)">↳ ${r.obs}</span>`:''}</td><td>${j.nome}</td><td>${r.data}</td><td>${chipRel(r.status)}</td></tr>`;}).join('')}
+    </tbody></table></div></div>`;
+}
+
+function vPagamentosSema(){
+  const aptos = DB.jovens.filter(j=>j.bolsa==='ativa');
+  const susp = DB.jovens.filter(j=>j.bolsa==='suspensa');
+  const bloq = DB.jovens.filter(j=>j.bolsa==='desligado');
+  return `
+  <h1 class="pg-title">Pagamentos — folha de bolsas</h1>
+  <p class="pg-sub">Competência ${COMPETENCIA} · valor unitário ${brl(VALOR_BOLSA)} · situação sincronizada automaticamente com a camada de advertências.</p>
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lbl">Aptos ao repasse</div><div class="val" style="color:var(--folha)">${aptos.length}</div><div class="sub">${brl(aptos.length*VALOR_BOLSA)} (amostra)</div></div>
+    <div class="kpi"><div class="lbl">Suspensos</div><div class="val" style="color:var(--barro)">${susp.length}</div><div class="sub">2ª advertência homologada</div></div>
+    <div class="kpi"><div class="lbl">Bloqueados</div><div class="val" style="color:var(--vinho)">${bloq.length}</div><div class="sub">desligamento (3ª advertência)</div></div>
+    <div class="kpi"><div class="lbl">Folha estadual estimada</div><div class="val">${brl(DB.regioes.reduce((s,r)=>s+r.jovens,0)*VALOR_BOLSA)}</div><div class="sub">10.520 bolsistas · dados simulados</div></div>
+  </div>
+  <div class="alert al-blue section-gap">ℹ️ <span><b>Integração automática:</b> advertências de 2º nível suspendem o repasse por 30 dias; de 3º nível bloqueiam definitivamente. A reversão pela SEMA reabilita o pagamento na competência seguinte. Toda movimentação gera trilha de auditoria (LGPD · DAMA-DMBOK).</span></div>
+  <div class="card section-gap"><div class="hd"><h3>Folha ${COMPETENCIA} — amostra de bolsistas</h3>
+    <span style="margin-left:auto"><button class="btn btn-p btn-sm" onclick="toast('Folha processada (simulação): lote enviado ao agente financeiro com '+${aptos.length}+' repasses.')">Processar folha (simulação)</button></span></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>Bolsista</th><th>Município · Região</th><th>Competência</th><th class="t-num">Valor</th><th>Situação</th><th>Ocorrências</th></tr></thead><tbody>
+    ${DB.jovens.map(j=>{const sf=statusFolha(j);const n=advertenciasDe(j.id,false).length;
+      return `<tr><td><b>${j.nome}</b></td><td>${j.municipio} · <span style="color:var(--cinza)">${j.regiao}</span></td>
+      <td>${COMPETENCIA}</td><td class="t-num">${sf.t==='Apto'?brl(VALOR_BOLSA):'—'}</td>
+      <td><span class="chip ${sf.c}">${sf.t}</span></td>
+      <td>${n?`<button class="btn btn-ghost btn-sm" onclick="modalPerfilJovem('${j.id}')">${n} advertência(s)</button>`:'<span style="color:var(--cinza)">—</span>'}</td></tr>`;}).join('')}
+    </tbody></table></div></div>`;
+}
+
+function vBI(){
+  return `
+  <h1 class="pg-title">BI de Dados — inteligência do programa</h1>
+  <p class="pg-sub">Camada analítica alimentada pelo Data Lakehouse (SISAJA + app de campo + folha). Dados simulados para demonstração.</p>
+  <div class="cols-2 section-gap">
+    <div class="card"><div class="hd"><h3>Engajamento médio (índice SISAJA)</h3></div><div class="bd">${chartLinha(DB.engajamento, DB.meses)}</div></div>
+    <div class="card"><div class="hd"><h3>Execução orçamentária 2026</h3></div>
+      <div class="bd" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+        ${chartDonut(DB.execucao,'#0C4A57','executado')}
+        <div style="font-size:13px;color:var(--cinza);max-width:220px">Percentual do orçamento anual de bolsas e ações executado até ${COMPETENCIA}. Meta de execução no período: 70%.
+        <br><span class="chip st-ok" style="margin-top:8px">▲ 2 p.p. acima da meta</span></div>
+      </div></div>
+  </div>
+  <div class="cols-2 section-gap">
+    <div class="card"><div class="hd"><h3>Jovens por região</h3></div><div class="bd">${chartBarras(DB.regioes,'jovens')}</div></div>
+    <div class="card"><div class="hd"><h3>Ações socioambientais no mês</h3></div><div class="bd">${chartBarras(DB.regioes,'acoes')}</div></div>
+  </div>
+  <div class="card section-gap"><div class="hd"><h3>Síntese territorial</h3><span class="hint">base para o Índice de Aderência Territorial (IAT)</span></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>Região de planejamento</th><th class="t-num">Jovens</th><th class="t-num">Ações/mês</th><th class="t-num">Ações por 100 jovens</th></tr></thead><tbody>
+    ${DB.regioes.map(r=>`<tr><td><b>${r.nome}</b></td><td class="t-num">${r.jovens.toLocaleString('pt-BR')}</td><td class="t-num">${r.acoes}</td><td class="t-num">${(r.acoes/r.jovens*100).toFixed(1)}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+
+/* ================= MÓDULO · PERFIS DE USUÁRIOS ================= */
+state.fUsr = {q:'', papel:'', status:''};
+function filtrarUsr(){
+  state.fUsr.q = $('#fq') ? $('#fq').value.toLowerCase() : '';
+  state.fUsr.papel = $('#fp') ? $('#fp').value : '';
+  state.fUsr.status = $('#fs') ? $('#fs').value : '';
+  $('#tblUsr').innerHTML = linhasUsuarios();
+}
+function linhasUsuarios(){
+  const f = state.fUsr;
+  const lista = DB.usuarios.filter(u=>
+    (!f.q || u.nome.toLowerCase().includes(f.q) || u.municipio.toLowerCase().includes(f.q) || u.email.toLowerCase().includes(f.q)) &&
+    (!f.papel || u.papel===f.papel) && (!f.status || u.status===f.status));
+  if(!lista.length) return '<tr><td colspan="6" style="color:var(--cinza)">Nenhum usuário encontrado com os filtros aplicados.</td></tr>';
+  return lista.map(u=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px"><span class="avatar" style="width:30px;height:30px;font-size:11px;background:${avatarCor(u.papel)}">${iniciais(u.nome)}</span><div><b>${u.nome}</b><br><span style="font-size:12px;color:var(--cinza)">${u.email}</span></div></div></td>
+    <td>${u.papel}</td><td>${u.municipio}<br><span style="font-size:12px;color:var(--cinza)">${u.regiao}</span></td>
+    <td><span class="chip ${u.status==='ativo'?'st-ok':'st-dev'}">${u.status==='ativo'?'Ativo':'Suspenso'}</span></td>
+    <td><div class="btn-row">
+      <button class="btn btn-ghost btn-sm" onclick="verUsuario('${u.id}')">Ver perfil</button>
+      <button class="btn btn-s btn-sm" onclick="editarUsuario('${u.id}')">Editar</button>
+      <button class="btn btn-s btn-sm" onclick="toggleUsuario('${u.id}')">${u.status==='ativo'?'Suspender':'Reativar'}</button>
+    </div></td></tr>`).join('');
+}
+function vUsuarios(){
+  const papeis = [...new Set(DB.usuarios.map(u=>u.papel))];
+  return `
+  <h1 class="pg-title">Perfis de Usuários</h1>
+  <p class="pg-sub">Gestão de identidades e papéis de acesso (RBAC) — gestores SEMA, coordenações regionais e jovens bolsistas. Trilha de auditoria em todas as alterações.</p>
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lbl">Usuários cadastrados</div><div class="val">${DB.usuarios.length}</div><div class="sub">amostra de demonstração</div></div>
+    <div class="kpi"><div class="lbl">Coordenações regionais</div><div class="val">${DB.usuarios.filter(u=>u.papel==='Coordenação Regional').length}</div><div class="sub">de 14 regiões de planejamento</div></div>
+    <div class="kpi"><div class="lbl">Jovens com acesso</div><div class="val">${DB.usuarios.filter(u=>u.papel==='Jovem AJA').length}</div><div class="sub">contas vinculadas ao SISAJA</div></div>
+    <div class="kpi"><div class="lbl">Contas suspensas</div><div class="val" style="color:var(--barro)">${DB.usuarios.filter(u=>u.status==='suspenso').length}</div><div class="sub">vinculadas a advertências</div></div>
+  </div>
+  <div class="card section-gap"><div class="hd"><h3>Usuários da plataforma</h3>
+    <span style="margin-left:auto"><button class="btn btn-p btn-sm" onclick="modalNovoUsuario()">+ Novo usuário</button></span></div>
+    <div class="bd">
+      <div class="filters">
+        <input class="input" id="fq" placeholder="Buscar por nome, município ou e-mail…" oninput="filtrarUsr()">
+        <select class="select" id="fp" onchange="filtrarUsr()"><option value="">Todos os papéis</option>${papeis.map(p=>`<option>${p}</option>`).join('')}</select>
+        <select class="select" id="fs" onchange="filtrarUsr()"><option value="">Todas as situações</option><option value="ativo">Ativo</option><option value="suspenso">Suspenso</option></select>
+      </div>
+      <table class="tbl"><thead><tr><th>Usuário</th><th>Papel de acesso</th><th>Município · Região</th><th>Situação</th><th>Ações</th></tr></thead>
+      <tbody id="tblUsr">${linhasUsuarios()}</tbody></table>
+      <p style="font-size:12px;color:var(--cinza);margin-top:12px">🔒 <b>LGPD:</b> dados de menores são pseudonimizados na camada analítica; acesso a dados pessoais segue política de mínimo privilégio, com registro de log por consulta.</p>
+    </div></div>`;
+}
+function verUsuario(id){
+  const u = DB.usuarios.find(x=>x.id===id);
+  if(u.papel==='Jovem AJA' && jovemById(id)){ modalPerfilJovem(id); return; }
+  abrirModal(`
+    <div class="m-hd"><h3>Perfil do usuário</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <div class="perfil-head" style="margin-bottom:16px"><div class="avatar" style="background:${avatarCor(u.papel)}">${iniciais(u.nome)}</div>
+      <div><h3 style="font-size:17px">${u.nome}</h3><div class="meta">${u.papel}</div></div></div>
+      <dl class="dl">
+        <dt>Identificador</dt><dd class="mono">${u.id}</dd>
+        <dt>E-mail</dt><dd>${u.email}</dd>
+        <dt>Lotação</dt><dd>${u.municipio} · ${u.regiao}</dd>
+        <dt>Situação</dt><dd><span class="chip ${u.status==='ativo'?'st-ok':'st-dev'}">${u.status==='ativo'?'Ativo':'Suspenso'}</span></dd>
+        <dt>Último acesso</dt><dd>18/07/2026 · 09h14 (simulado)</dd>
+      </dl>
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Fechar</button></div>
+    </div>`);
+}
+function editarUsuario(id){
+  const u = DB.usuarios.find(x=>x.id===id);
+  abrirModal(`
+    <div class="m-hd"><h3>Editar usuário</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <div class="field"><label>Nome</label><input class="input" id="euNome" value="${u.nome}"></div>
+      <div class="field"><label>Papel de acesso</label><select class="select" id="euPapel">
+        ${['Gestor Estadual (SEMA)','Analista de Dados (SEMA)','Coordenação Regional','Jovem AJA'].map(p=>`<option ${u.papel===p?'selected':''}>${p}</option>`).join('')}</select>
+        <small>A troca de papel redefine as permissões (RBAC) e é registrada na trilha de auditoria.</small></div>
+      <div class="field"><label>E-mail institucional</label><input class="input" id="euEmail" value="${u.email}"></div>
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="salvarEdicao('${u.id}')">Salvar alterações</button></div>
+    </div>`);
+}
+function salvarEdicao(id){
+  const u = DB.usuarios.find(x=>x.id===id);
+  u.nome = $('#euNome').value.trim() || u.nome;
+  u.papel = $('#euPapel').value; u.email = $('#euEmail').value.trim() || u.email;
+  fecharModal(); toast('Usuário atualizado — alteração registrada na trilha de auditoria.'); refresh();
+}
+function toggleUsuario(id){
+  const u = DB.usuarios.find(x=>x.id===id);
+  u.status = u.status==='ativo' ? 'suspenso' : 'ativo';
+  toast(`Conta de ${u.nome} ${u.status==='ativo'?'reativada':'suspensa'}.`); refresh();
+}
+function modalNovoUsuario(){
+  abrirModal(`
+    <div class="m-hd"><h3>Novo usuário</h3><button class="m-close" onclick="fecharModal()" aria-label="Fechar">✕</button></div>
+    <div class="m-bd">
+      <div class="field"><label>Nome completo</label><input class="input" id="nuNome" placeholder="Nome do usuário"></div>
+      <div class="field"><label>Papel de acesso</label><select class="select" id="nuPapel">
+        <option>Coordenação Regional</option><option>Analista de Dados (SEMA)</option><option>Gestor Estadual (SEMA)</option><option>Jovem AJA</option></select></div>
+      <div class="field"><label>Região de planejamento</label><select class="select" id="nuRegiao">
+        <option>Estadual</option>${DB.regioes.map(r=>`<option>${r.nome}</option>`).join('')}</select></div>
+      <div class="field"><label>Município</label><input class="input" id="nuMun" placeholder="Município de lotação"></div>
+      <div class="field"><label>E-mail institucional</label><input class="input" id="nuEmail" placeholder="usuario@sema.ce.gov.br"></div>
+      <div class="m-actions"><button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="criarUsuario()">Criar usuário</button></div>
+    </div>`);
+}
+function criarUsuario(){
+  const nome = $('#nuNome').value.trim();
+  if(!nome){ toast('Informe o nome do usuário.'); return; }
+  DB.usuarios.push({ id:'U'+String(++seqUsr).padStart(2,'0'), nome, papel:$('#nuPapel').value,
+    regiao:$('#nuRegiao').value, municipio:$('#nuMun').value.trim()||'—', email:$('#nuEmail').value.trim()||'—', status:'ativo' });
+  fecharModal(); toast(`Usuário ${nome} criado com sucesso.`); refresh();
+}
+
+/* ================= VISÕES · COORDENAÇÃO REGIONAL ================= */
+function jovensRegiao(){ return DB.jovens.filter(j=>j.regiao===state.user.regiao); }
+function vPainelCoord(){
+  const js = jovensRegiao();
+  const pend = DB.relatorios.filter(r=>r.status==='enviado' && jovemById(r.jovem).regiao===state.user.regiao);
+  const advReg = DB.advertencias.filter(a=>jovemById(a.jovem).regiao===state.user.regiao);
+  const engMed = Math.round(js.reduce((s,j)=>s+j.eng,0)/js.length);
+  return `
+  <h1 class="pg-title">Painel regional — ${state.user.regiao}</h1>
+  <p class="pg-sub">Acompanhamento territorial do ciclo 2026.1 · Coordenação: ${state.user.nome}</p>
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lbl">Jovens na região</div><div class="val">2.140</div><div class="sub">amostra detalhada: ${js.length} perfis</div></div>
+    <div class="kpi"><div class="lbl">Relatórios a validar</div><div class="val" style="color:${pend.length?'var(--barro)':'var(--folha)'}">${pend.length}</div><div class="sub">fila de validação regional</div></div>
+    <div class="kpi"><div class="lbl">Advertências no ciclo</div><div class="val">${advReg.length}</div><div class="sub">região · todas as situações</div></div>
+    <div class="kpi"><div class="lbl">Engajamento médio</div><div class="val">${engMed}%</div><div class="sub">meta regional: 75%</div></div>
+  </div>
+  ${pend.length?`<div class="alert al-amber section-gap">⏳ <span><b>Você tem ${pend.length} relatório(s) aguardando validação.</b> Acesse <b>Relatoria & Advertências</b> para validar, devolver ou registrar ocorrência.</span></div>`:''}
+  <div class="card section-gap"><div class="hd"><h3>Jovens do território — engajamento</h3><span class="hint">busca ativa recomendada abaixo de 65</span></div>
+    <div class="bd">${js.map(j=>`
+      <div class="bar-row"><span class="lb">${j.nome.split(' ')[0]} ${j.nome.split(' ')[1]||''} · ${j.municipio}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${j.eng}%;${j.eng<65?'background:linear-gradient(90deg,#E9A13B,#C4552F)':''}"></div></div>
+      <span class="vl">${j.eng}%</span></div>`).join('')}</div></div>`;
+}
+
+function vRelatoriaCoord(){
+  const fila = DB.relatorios.filter(r=>r.status==='enviado' && jovemById(r.jovem).regiao===state.user.regiao);
+  const advReg = DB.advertencias.filter(a=>jovemById(a.jovem).regiao===state.user.regiao);
+  const hist = DB.relatorios.filter(r=>jovemById(r.jovem).regiao===state.user.regiao && r.status!=='enviado');
+  return `
+  <h1 class="pg-title">Relatoria & Advertências — validação regional</h1>
+  <p class="pg-sub">Valide os relatórios de atividade dos jovens do território. Quando houver descumprimento das regras do programa, registre a advertência correspondente.</p>
+  <div class="card section-gap"><div class="hd"><h3>Fluxo da relatoria</h3></div><div class="bd">${fluxoRelatoria()}</div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>Fila de validação</h3><span class="hint">${fila.length} relatório(s) enviado(s) pelos jovens</span></div>
+    <div class="bd">${fila.length?`<table class="tbl"><thead><tr><th>ID</th><th>Atividade</th><th>Jovem</th><th>Data</th><th>Ações</th></tr></thead><tbody>
+      ${fila.map(r=>{const j=jovemById(r.jovem);const n=advertenciasDe(j.id).length;
+      return `<tr><td class="mono">${r.id}</td>
+        <td><b>${r.titulo}</b><br><span style="font-size:12px;color:var(--cinza)">${r.municipio} · 📍 georreferenciado · 📷 3 fotos</span></td>
+        <td>${j.nome}${n?`<br><span class="chip adv-${Math.min(n,3)}" style="margin-top:3px">${n} advertência(s)</span>`:''}</td>
+        <td>${r.data}</td>
+        <td><div class="btn-row">
+          <button class="btn btn-p btn-sm" onclick="validarRel('${r.id}')">Validar</button>
+          <button class="btn btn-s btn-sm" onclick="modalDevolver('${r.id}')">Devolver</button>
+          <button class="btn btn-warn btn-sm" onclick="modalAdvertencia('${j.id}','${r.id}')">Advertir</button>
+        </div></td></tr>`;}).join('')}
+      </tbody></table>`:'<p style="color:var(--cinza);font-size:13.5px">Fila vazia — todos os relatórios da região foram tratados. ✅</p>'}</div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>🛡 Camada de advertências</h3><span class="hint">escala progressiva · homologação obrigatória pela SEMA</span></div>
+    <div class="bd">
+      ${escalaAdvertencias()}
+      <div class="alert al-blue" style="margin-top:14px">⚖️ <span>Toda advertência exige <b>justificativa formal</b> (trilha de auditoria) e garante ao jovem o direito de <b>recurso</b>. O sistema sugere o nível conforme o histórico do ciclo e sincroniza automaticamente a situação da bolsa no módulo de Pagamentos após homologação.</span></div>
+      <h3 style="font-size:14.5px;margin:18px 0 8px">Advertências da região no ciclo</h3>
+      ${tabelaAdvertencias(advReg, false)}
+    </div></div>
+
+  <div class="card section-gap"><div class="hd"><h3>Histórico de relatórios da região</h3></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>ID</th><th>Atividade</th><th>Jovem</th><th>Situação</th></tr></thead><tbody>
+    ${hist.map(r=>`<tr><td class="mono">${r.id}</td><td>${r.titulo}${r.obs?`<br><span style="font-size:12px;color:var(--barro)">↳ ${r.obs}</span>`:''}</td><td>${jovemById(r.jovem).nome}</td><td>${chipRel(r.status)}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+
+function vJovensCoord(){
+  const js = jovensRegiao();
+  return `
+  <h1 class="pg-title">Jovens do território</h1>
+  <p class="pg-sub">${state.user.regiao} · ciclo 2026.1 · perfis vinculados ao SISAJA (amostra de demonstração)</p>
+  <div class="card section-gap"><div class="bd" style="padding-top:20px">
+    <table class="tbl"><thead><tr><th>Jovem</th><th>Município</th><th>Engajamento</th><th>Bolsa</th><th>Ocorrências</th><th>Ações</th></tr></thead><tbody>
+    ${js.map(j=>{const sb=statusBolsa(j);const n=advertenciasDe(j.id).length;
+      return `<tr><td><div style="display:flex;align-items:center;gap:10px"><span class="avatar" style="width:30px;height:30px;font-size:11px;background:var(--sol)">${iniciais(j.nome)}</span><b>${j.nome}</b></div></td>
+      <td>${j.municipio}</td>
+      <td><span class="chip ${j.eng>=75?'st-ok':(j.eng>=65?'st-pend':'st-dev')}">${j.eng}%</span></td>
+      <td><span class="chip ${sb.c}">${sb.t}</span></td>
+      <td>${n||'—'}</td>
+      <td><div class="btn-row"><button class="btn btn-ghost btn-sm" onclick="modalPerfilJovem('${j.id}')">Ver perfil</button>
+      <button class="btn btn-warn btn-sm" onclick="modalAdvertencia('${j.id}',null)">Advertir</button></div></td></tr>`;}).join('')}
+    </tbody></table></div></div>`;
+}
+
+function vPagamentosCoord(){
+  const js = jovensRegiao();
+  return `
+  <h1 class="pg-title">Pagamentos — situação da região</h1>
+  <p class="pg-sub">Consulta (somente leitura). A gestão da folha é atribuição da SEMA; a situação reflete as advertências homologadas.</p>
+  <div class="card section-gap"><div class="bd" style="padding-top:20px">
+    <table class="tbl"><thead><tr><th>Bolsista</th><th>Município</th><th>Competência</th><th class="t-num">Valor</th><th>Situação</th></tr></thead><tbody>
+    ${js.map(j=>{const sf=statusFolha(j);
+      return `<tr><td><b>${j.nome}</b></td><td>${j.municipio}</td><td>${COMPETENCIA}</td>
+      <td class="t-num">${sf.t==='Apto'?brl(VALOR_BOLSA):'—'}</td><td><span class="chip ${sf.c}">${sf.t}</span></td></tr>`;}).join('')}
+    </tbody></table></div></div>`;
+}
+
+/* ================= VISÕES · JOVEM AJA ================= */
+function vPainelJovem(){
+  const j = jovemById(state.user.jid);
+  const meus = DB.relatorios.filter(r=>r.jovem===j.id);
+  const sb = statusBolsa(j);
+  return `
+  <h1 class="pg-title">Olá, ${j.nome.split(' ')[0]}! 🌱</h1>
+  <p class="pg-sub">Ciclo 2026.1 · ${j.municipio} · ${j.regiao}</p>
+  <div class="cols-32 section-gap">
+    <div>
+      <div class="grid-kpi" style="margin-top:0">
+        <div class="kpi"><div class="lbl">Minha bolsa</div><div class="val" style="font-size:22px"><span class="chip ${sb.c}" style="font-size:13px">${sb.t}</span></div><div class="sub">competência ${COMPETENCIA}</div></div>
+        <div class="kpi"><div class="lbl">Atividades homologadas</div><div class="val">${meus.filter(r=>r.status==='homologado').length}</div><div class="sub">de ${meus.length} enviadas no ciclo</div></div>
+      </div>
+      <div class="card section-gap"><div class="hd"><h3>Próximas ações do território</h3></div>
+        <div class="bd">
+          <table class="tbl"><tbody>
+            <tr><td><b>Mutirão Junho Verde — Lagoa da Maraponga</b><br><span style="font-size:12px;color:var(--cinza)">Maracanaú · ação coletiva regional</span></td><td>22/07/2026</td><td><span class="chip st-info">Inscrita</span></td></tr>
+            <tr><td><b>Formação: educação ambiental e clima</b><br><span style="font-size:12px;color:var(--cinza)">EaD · trilha formativa AJA</span></td><td>25/07/2026</td><td><span class="chip st-pend">Vagas abertas</span></td></tr>
+          </tbody></table>
+        </div></div>
+    </div>
+    <div class="card"><div class="hd"><h3>Meu engajamento</h3></div>
+      <div class="bd" style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        ${chartDonut(j.eng,'#E9A13B','engajamento')}
+        <p style="font-size:12.5px;color:var(--cinza);text-align:center">Índice calculado a partir de presença nas ações, relatorias homologadas e trilha formativa.</p>
+      </div></div>
+  </div>`;
+}
+
+function vAtividades(){
+  const j = jovemById(state.user.jid);
+  const meus = DB.relatorios.filter(r=>r.jovem===j.id);
+  return `
+  <h1 class="pg-title">Minhas atividades</h1>
+  <p class="pg-sub">Registre suas ações socioambientais. No app de campo, o registro funciona offline e sincroniza quando houver conexão.</p>
+  <div class="cols-2 section-gap">
+    <div class="card"><div class="hd"><h3>Registrar nova atividade</h3></div>
+      <div class="bd">
+        <div class="field"><label for="atTitulo">Título da atividade</label><input class="input" id="atTitulo" placeholder="Ex.: Oficina de reaproveitamento de resíduos"></div>
+        <div class="field"><label for="atData">Data de realização</label><input class="input" id="atData" value="18/07/2026"></div>
+        <div class="field"><label for="atDesc">Descrição e resultados</label><textarea class="textarea" id="atDesc" placeholder="O que foi feito, quantas pessoas participaram, qual o impacto…"></textarea></div>
+        <div class="field"><label style="display:flex;align-items:center;gap:8px;font-weight:500"><input type="checkbox" id="atGeo" checked> Anexar fotos com geolocalização (simulado)</label>
+        <small>As fotos passam por validação automática de visão computacional antes da análise da coordenação.</small></div>
+        <button class="btn btn-p" onclick="enviarRelatorio()">Enviar para validação</button>
+      </div></div>
+    <div class="card"><div class="hd"><h3>Enviadas no ciclo</h3></div>
+      <div class="bd"><table class="tbl"><thead><tr><th>Atividade</th><th>Data</th><th>Situação</th></tr></thead><tbody>
+      ${meus.map(r=>`<tr><td><b>${r.titulo}</b>${r.obs?`<br><span style="font-size:12px;color:var(--barro)">↳ ${r.obs}</span>`:''}</td><td>${r.data}</td><td>${chipRel(r.status)}</td></tr>`).join('')}
+      </tbody></table></div></div>
+  </div>`;
+}
+function enviarRelatorio(){
+  const t = $('#atTitulo').value.trim();
+  if(!t){ toast('Dê um título à atividade.'); return; }
+  const j = jovemById(state.user.jid);
+  DB.relatorios.push({ id:'R'+(seqRel++), jovem:j.id, titulo:t, municipio:j.municipio,
+    data:$('#atData').value || '18/07/2026', status:'enviado', obs:'' });
+  toast('Atividade enviada! Sua coordenação regional fará a validação.');
+  refresh();
+}
+
+function vBolsa(){
+  const j = jovemById(state.user.jid);
+  const sb = statusBolsa(j);
+  return `
+  <h1 class="pg-title">Minha bolsa</h1>
+  <p class="pg-sub">Extrato de repasses do ciclo 2026.1 · valor mensal ${brl(VALOR_BOLSA)}</p>
+  ${j.bolsa!=='ativa'?`<div class="alert al-red section-gap">⚠️ <span><b>Sua bolsa está ${sb.t.toLowerCase()}.</b> Consulte a aba <b>Meu perfil</b> para ver a ocorrência e, se desejar, apresentar recurso.</span></div>`:''}
+  <div class="grid-kpi">
+    <div class="kpi"><div class="lbl">Situação atual</div><div class="val" style="font-size:22px"><span class="chip ${sb.c}" style="font-size:13px">${sb.t}</span></div><div class="sub">sincronizada com a relatoria</div></div>
+    <div class="kpi"><div class="lbl">Recebido no ciclo</div><div class="val">${brl(DB.extratoJ03.filter(e=>e.status==='pago').reduce((s,e)=>s+e.valor,0))}</div><div class="sub">5 competências pagas</div></div>
+    <div class="kpi"><div class="lbl">Próximo repasse</div><div class="val" style="font-size:22px">05/08</div><div class="sub">competência ${COMPETENCIA}</div></div>
+  </div>
+  <div class="card section-gap"><div class="hd"><h3>Extrato de repasses</h3></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>Competência</th><th class="t-num">Valor</th><th>Situação</th><th>Data do crédito</th></tr></thead><tbody>
+    ${DB.extratoJ03.map(e=>`<tr><td>${e.comp}</td><td class="t-num">${brl(e.valor)}</td>
+      <td><span class="chip ${e.status==='pago'?'st-ok':'st-pend'}">${e.status==='pago'?'Pago':'Previsto'}</span></td><td>${e.data}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+
+function vPerfilJovem(){
+  const j = jovemById(state.user.jid);
+  const sb = statusBolsa(j);
+  const advs = DB.advertencias.filter(a=>a.jovem===j.id && a.status!=='revertida');
+  return `
+  <h1 class="pg-title">Meu perfil</h1>
+  <p class="pg-sub">Dados cadastrais, situação no programa e histórico de ocorrências.</p>
+  <div class="card section-gap"><div class="bd" style="padding-top:20px">
+    <div class="perfil-head" style="margin-bottom:18px">
+      <div class="avatar" style="background:var(--sol)">${iniciais(j.nome)}</div>
+      <div><h3>${j.nome}</h3><div class="meta">Jovem AJA · ${j.municipio} · ${j.regiao} · Ciclo ${j.ciclo}</div></div>
+    </div>
+    <dl class="dl">
+      <dt>Matrícula</dt><dd class="mono">${j.id}-AJA-2026</dd>
+      <dt>Situação da bolsa</dt><dd><span class="chip ${sb.c}">${sb.t}</span></dd>
+      <dt>Engajamento</dt><dd>${j.eng}%</dd>
+      <dt>Trilha formativa</dt><dd>4 de 6 módulos concluídos</dd>
+      <dt>E-mail</dt><dd>maria.andrade@aja.ce.gov.br</dd>
+    </dl>
+  </div></div>
+  <div class="card section-gap"><div class="hd"><h3>🛡 Ocorrências e advertências</h3><span class="hint">contraditório e ampla defesa garantidos</span></div>
+    <div class="bd">
+      ${advs.length ? advs.map(a=>`
+        <div class="alert ${a.nivel===1?'al-amber':'al-red'}" style="margin-bottom:10px">
+          ${chipNivel(a.nivel)}
+          <span style="flex:1"><b>${a.motivo}</b> — ${a.just}<br>
+          <span style="font-size:12px;opacity:.8">${a.autor} · ${a.data} · ${chipAdvStatus(a.status)}</span><br>
+          ${a.recurso ? `<span class="chip st-info" style="margin-top:6px">Recurso ${a.recurso}</span>` :
+            `<button class="btn btn-s btn-sm" style="margin-top:8px" onclick="apresentarRecurso('${a.id}')">Apresentar recurso</button>`}</span>
+        </div>`).join('')
+      : '<p style="color:var(--cinza);font-size:13.5px">Você não possui advertências neste ciclo. Continue assim! ✅</p>'}
+      <p style="font-size:12px;color:var(--cinza);margin-top:10px">Advertências seguem escala progressiva (1ª notificação · 2ª suspensão da bolsa · 3ª desligamento) e só produzem efeito após homologação pela SEMA. O recurso suspende novos efeitos até a análise.</p>
+    </div></div>
+  <div class="alert al-green section-gap">🔒 <span><b>Seus dados, seus direitos (LGPD):</b> você pode solicitar acesso, correção ou portabilidade dos seus dados pelo e-mail dpo@sema.ce.gov.br. Dados usados no BI são pseudonimizados.</span></div>`;
+}
+
+/* ================= VISÃO · PORTAL DO CIDADÃO ================= */
+function vTransparencia(){
+  const totJ = DB.regioes.reduce((s,r)=>s+r.jovens,0);
+  const totA = DB.regioes.reduce((s,r)=>s+r.acoes,0);
+  return `
+  <div class="pub-hero">
+    <h2>Transparência do Programa AJA</h2>
+    <p>O Programa Agente Jovem Ambiental (Lei Estadual nº 17.383/2021) engaja jovens em ações de sustentabilidade nos 184 municípios do Ceará. Acompanhe aqui os números, os repasses e o impacto — dados abertos para o controle social. <b>Valores simulados para demonstração.</b></p>
+  </div>
+  <div class="grid-kpi" style="margin-top:0">
+    <div class="kpi"><div class="lbl">Jovens atendidos</div><div class="val">${totJ.toLocaleString('pt-BR')}</div><div class="sub">ciclo 2026.1</div></div>
+    <div class="kpi"><div class="lbl">Municípios</div><div class="val">184</div><div class="sub">todas as regiões do estado</div></div>
+    <div class="kpi"><div class="lbl">Ações socioambientais/mês</div><div class="val">${totA.toLocaleString('pt-BR')}</div><div class="sub">limpeza, plantio, educação ambiental</div></div>
+    <div class="kpi"><div class="lbl">Repasse mensal em bolsas</div><div class="val">${brl(totJ*VALOR_BOLSA)}</div><div class="sub">${brl(VALOR_BOLSA)} por jovem</div></div>
+  </div>
+  <div class="cols-2 section-gap">
+    <div class="card"><div class="hd"><h3>Jovens por região de planejamento</h3></div><div class="bd">${chartBarras(DB.regioes,'jovens')}</div></div>
+    <div class="card"><div class="hd"><h3>Execução do orçamento 2026</h3></div>
+      <div class="bd" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">${chartDonut(DB.execucao,'#14524A','executado')}
+      <p style="font-size:13px;color:var(--cinza);max-width:230px">Percentual executado do orçamento anual do programa até julho/2026, conforme prestação de contas.</p></div></div>
+  </div>
+  <div class="card section-gap"><div class="hd"><h3>Repasses por região — ${COMPETENCIA}</h3>
+    <span style="margin-left:auto"><button class="btn btn-p btn-sm" onclick="baixarCSV()">⬇ Baixar dados abertos (CSV)</button></span></div>
+    <div class="bd"><table class="tbl"><thead><tr><th>Região</th><th class="t-num">Jovens</th><th class="t-num">Repasse mensal</th><th class="t-num">Ações/mês</th></tr></thead><tbody>
+    ${DB.regioes.map(r=>`<tr><td><b>${r.nome}</b></td><td class="t-num">${r.jovens.toLocaleString('pt-BR')}</td><td class="t-num">${brl(r.jovens*VALOR_BOLSA)}</td><td class="t-num">${r.acoes}</td></tr>`).join('')}
+    </tbody></table>
+    <p style="font-size:12px;color:var(--cinza);margin-top:12px">🔒 <b>Privacidade (LGPD):</b> os dados publicados são agregados e anonimizados — nenhuma informação pessoal de jovens (menores de idade) é divulgada. Metodologia e dicionário de dados disponíveis no pacote de dados abertos.</p>
+    </div></div>`;
+}
+function baixarCSV(){
+  let csv = 'regiao;jovens;repasse_mensal_brl;acoes_mes\n';
+  DB.regioes.forEach(r=>{ csv += `${r.nome};${r.jovens};${r.jovens*VALOR_BOLSA};${r.acoes}\n`; });
+  const blob = new Blob(["\uFEFF"+csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'engaja_aja_dados_abertos_2026.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Arquivo de dados abertos gerado (CSV com separador ";").');
+}
+</script>
+</body>
+</html>
